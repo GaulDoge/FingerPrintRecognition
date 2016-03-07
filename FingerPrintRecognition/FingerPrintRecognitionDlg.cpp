@@ -62,6 +62,7 @@ BEGIN_MESSAGE_MAP(CFingerPrintRecognitionDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_BN_CLICKED(IDC_BUTTON1, &CFingerPrintRecognitionDlg::OnBnClickedButton1)
 END_MESSAGE_MAP()
 
 
@@ -150,3 +151,53 @@ HCURSOR CFingerPrintRecognitionDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+
+//add mine
+void CFingerPrintRecognitionDlg::OnBnClickedButton1()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	static bool state = true;
+	IplImage *image = NULL;
+	if (state) {
+		image = cvLoadImage("D:\\Users\\userl\\Pictures\\fingerprint_db\\URU_0001_01.BMP", 1);
+		if (image == NULL) {
+			MessageBox(L"load image error");
+			return;
+		}
+		leftImage.CopyOf(image);
+
+		drawPicToHDC(IDC_PicLeft);
+
+		cvReleaseImage(&image);
+	}
+	else {
+		cv::Mat img =cv::Mat(550, 500, CV_8UC3); 
+		if (img.empty()) {
+			MessageBox(L"create image error");
+			return;
+		}
+		image = new IplImage(img);
+		leftImage.CopyOf(image);
+
+		drawPicToHDC(IDC_PicLeft);
+
+		//cvReleaseImage(&image);
+	}
+	state = !state;
+}
+
+void CFingerPrintRecognitionDlg::drawPicToHDC(UINT ID) {
+	//MessageBox(L"in draw function");
+	CDC *pDC = GetDlgItem(ID)->GetDC();
+	HDC hDC = pDC->GetSafeHdc();
+	CRect rect;
+	GetDlgItem(ID)->GetClientRect(&rect);
+	//CvvImage cimg;
+	//IplImage *img = NULL;
+	if (ID == IDC_PicLeft) leftImage.DrawToHDC(hDC, &rect);
+	if (ID == IDC_PicRight) rightImage.DrawToHDC(hDC, &rect);
+	//cimg.CopyOf(img);
+	//cimg.DrawToHDC(hDC, &rect);
+	ReleaseDC(pDC);
+
+}
