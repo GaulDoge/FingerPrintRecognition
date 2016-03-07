@@ -2,3 +2,7 @@
 Debug/*
 ipch/*
 FingerPrintRecognition/Debug/*
+FingerPrintRecognition.sdf
+*~
+FingerPrintRecognition.opensdf
+
