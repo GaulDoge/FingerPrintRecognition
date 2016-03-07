@@ -1,3 +1,8 @@
+//add mine
+#include<cv.h>
+#include<highgui.h>
+#include "CvvImage.h"
+
 
 // FingerPrintRecognitionDlg.h : Í·ÎÄ¼þ
 //
@@ -29,4 +34,10 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+public:
+	//add mine
+	afx_msg void OnBnClickedButton1();
+	void drawPicToHDC(UINT ID);
+	CvvImage leftImage;
+	CvvImage rightImage;
 };
