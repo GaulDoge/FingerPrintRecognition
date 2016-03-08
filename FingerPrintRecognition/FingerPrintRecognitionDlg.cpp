@@ -26,8 +26,8 @@ public:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 // 实现
-protected:
-	DECLARE_MESSAGE_MAP()
+//protected:
+//	DECLARE_MESSAGE_MAP()
 };
 
 CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
@@ -39,8 +39,6 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 }
 
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-END_MESSAGE_MAP()
 
 
 // CFingerPrintRecognitionDlg 对话框
@@ -58,11 +56,15 @@ void CFingerPrintRecognitionDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 }
 
+//事件响应函数
 BEGIN_MESSAGE_MAP(CFingerPrintRecognitionDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON1, &CFingerPrintRecognitionDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(ID_MenuAdd, &CFingerPrintRecognitionDlg::OnBnMenuAdd)
+	ON_BN_CLICKED(ID_MenuNew, &CFingerPrintRecognitionDlg::OnBnMenuNew)
+	ON_BN_CLICKED(ID_MenuRecognize, &CFingerPrintRecognitionDlg::OnBnMenuRecognize)
 END_MESSAGE_MAP()
 
 
@@ -98,6 +100,9 @@ BOOL CFingerPrintRecognitionDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO:  在此添加额外的初始化代码
+	//add mine
+	menu.LoadMenu(IDR_MENU1);
+	SetMenu(&menu);
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -153,6 +158,17 @@ HCURSOR CFingerPrintRecognitionDlg::OnQueryDragIcon()
 
 
 //add mine
+void CFingerPrintRecognitionDlg::drawPicToHDC(UINT ID) {
+	CDC *pDC = GetDlgItem(ID)->GetDC();
+	HDC hDC = pDC->GetSafeHdc();
+	CRect rect;
+	GetDlgItem(ID)->GetClientRect(&rect);
+	if (ID == IDC_PicLeft) leftImage.DrawToHDC(hDC, &rect);
+	if (ID == IDC_PicRight) rightImage.DrawToHDC(hDC, &rect);
+	ReleaseDC(pDC);
+
+}
+
 void CFingerPrintRecognitionDlg::OnBnClickedButton1()
 {
 	// TODO:  在此添加控件通知处理程序代码
@@ -180,24 +196,28 @@ void CFingerPrintRecognitionDlg::OnBnClickedButton1()
 		leftImage.CopyOf(image);
 
 		drawPicToHDC(IDC_PicLeft);
-
-		//cvReleaseImage(&image);
 	}
 	state = !state;
 }
 
-void CFingerPrintRecognitionDlg::drawPicToHDC(UINT ID) {
-	//MessageBox(L"in draw function");
-	CDC *pDC = GetDlgItem(ID)->GetDC();
-	HDC hDC = pDC->GetSafeHdc();
-	CRect rect;
-	GetDlgItem(ID)->GetClientRect(&rect);
-	//CvvImage cimg;
-	//IplImage *img = NULL;
-	if (ID == IDC_PicLeft) leftImage.DrawToHDC(hDC, &rect);
-	if (ID == IDC_PicRight) rightImage.DrawToHDC(hDC, &rect);
-	//cimg.CopyOf(img);
-	//cimg.DrawToHDC(hDC, &rect);
-	ReleaseDC(pDC);
+void CFingerPrintRecognitionDlg::OnBnMenuAdd() {
+	//MessageBox(L"菜单项：录入->添加");
+	IplImage *img = cvLoadImage("D:\\Users\\userl\\Pictures\\fingerprint_db\\URU_0001_01.BMP", 1);
+	if (img == NULL) {
+		MessageBox(L"load image error");
+		return;
+	}
+	rightImage.CopyOf(img);
 
+	drawPicToHDC(IDC_PicRight);
+
+	cvReleaseImage(&img);
+}
+
+void CFingerPrintRecognitionDlg::OnBnMenuNew() {
+	MessageBox(L"菜单项：录入->新建");
+}
+
+void CFingerPrintRecognitionDlg::OnBnMenuRecognize() {
+	MessageBox(L"菜单项：识别");
 }

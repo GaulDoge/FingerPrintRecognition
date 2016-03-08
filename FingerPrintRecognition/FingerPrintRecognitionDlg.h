@@ -36,8 +36,13 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	//add mine
-	afx_msg void OnBnClickedButton1();
-	void drawPicToHDC(UINT ID);
 	CvvImage leftImage;
 	CvvImage rightImage;
+	CMenu menu;
+
+	void drawPicToHDC(UINT ID);
+	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnMenuAdd();
+	afx_msg void OnBnMenuNew();
+	afx_msg void OnBnMenuRecognize();
 };
