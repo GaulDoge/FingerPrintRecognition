@@ -43,8 +43,6 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 
 // CFingerPrintRecognitionDlg 对话框
 
-
-
 CFingerPrintRecognitionDlg::CFingerPrintRecognitionDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CFingerPrintRecognitionDlg::IDD, pParent)
 {
@@ -61,7 +59,9 @@ BEGIN_MESSAGE_MAP(CFingerPrintRecognitionDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_BUTTON1, &CFingerPrintRecognitionDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_ImportImg1, &CFingerPrintRecognitionDlg::OnBnClickedOpenImg1)
+	ON_BN_CLICKED(IDC_ImportImg2, &CFingerPrintRecognitionDlg::OnBnClickedOpenImg2)
+	ON_BN_CLICKED(IDC_Recognize, &CFingerPrintRecognitionDlg::OnBnClickedRecognize)
 	ON_BN_CLICKED(ID_MenuAdd, &CFingerPrintRecognitionDlg::OnBnMenuAdd)
 	ON_BN_CLICKED(ID_MenuNew, &CFingerPrintRecognitionDlg::OnBnMenuNew)
 	ON_BN_CLICKED(ID_MenuRecognize, &CFingerPrintRecognitionDlg::OnBnMenuRecognize)
@@ -163,61 +163,125 @@ void CFingerPrintRecognitionDlg::drawPicToHDC(UINT ID) {
 	HDC hDC = pDC->GetSafeHdc();
 	CRect rect;
 	GetDlgItem(ID)->GetClientRect(&rect);
-	if (ID == IDC_PicLeft) leftImage.DrawToHDC(hDC, &rect);
-	if (ID == IDC_PicRight) rightImage.DrawToHDC(hDC, &rect);
+	if (ID == IDC_PicLeft) m_leftImage.DrawToHDC(hDC, &rect);
+	if (ID == IDC_PicRight) m_rightImage.DrawToHDC(hDC, &rect);
 	ReleaseDC(pDC);
 
 }
 
-void CFingerPrintRecognitionDlg::OnBnClickedButton1()
+void CFingerPrintRecognitionDlg::changeDlgMode(DlgMode m) {
+	m_mode = m;
+	INT_PTR md1 = SW_SHOW, md2 = SW_HIDE;
+	if (m_mode == MODE_RECG) {
+		md1 = SW_HIDE;
+		md2 = SW_SHOW;
+	}
+
+	GetDlgItem(IDC_ExtractTrait)->ShowWindow(md1);
+	GetDlgItem(IDC_SAVE)->ShowWindow(md1);
+
+	GetDlgItem(IDC_Recognize)->ShowWindow(md2);
+	GetDlgItem(IDC_ImportImg2)->ShowWindow(md2);
+}
+
+void CFingerPrintRecognitionDlg::OnBnClickedOpenImg1()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	static bool state = true;
-	IplImage *image = NULL;
-	if (state) {
-		image = cvLoadImage("D:\\Users\\userl\\Pictures\\fingerprint_db\\URU_0001_01.BMP", 1);
-		if (image == NULL) {
-			MessageBox(L"load image error");
+	IplImage *img = NULL;
+	CFileDialog fdlg(TRUE, L".BMP");
+	INT_PTR rs = fdlg.DoModal();
+	if (rs == IDOK) {
+		CString path = fdlg.GetPathName();
+		CT2A cvt(path);
+		img = cvLoadImage(cvt.m_psz);
+		if (img == NULL) {
+			MessageBox(L"load image eror");
 			return;
 		}
-		leftImage.CopyOf(image);
-
+		m_leftImage.CopyOf(img);
+		cvReleaseImage(&img);
 		drawPicToHDC(IDC_PicLeft);
-
-		cvReleaseImage(&image);
 	}
-	else {
-		cv::Mat img =cv::Mat(550, 500, CV_8UC3); 
-		if (img.empty()) {
-			MessageBox(L"create image error");
+}
+
+void CFingerPrintRecognitionDlg::OnBnClickedOpenImg2() {
+	// TODO:  在此添加控件通知处理程序代码
+	IplImage *img = NULL;
+	CFileDialog fdlg(TRUE, L".BMP");
+	INT_PTR rs = fdlg.DoModal();
+	if (rs == IDOK) {
+		CString path = fdlg.GetPathName();
+		CT2A cvt(path);
+		img = cvLoadImage(cvt.m_psz);
+		if (img == NULL) {
+			MessageBox(L"load image eror");
 			return;
 		}
-		image = new IplImage(img);
-		leftImage.CopyOf(image);
-
-		drawPicToHDC(IDC_PicLeft);
+		m_rightImage.CopyOf(img);
+		cvReleaseImage(&img);
+		drawPicToHDC(IDC_PicRight);
 	}
-	state = !state;
 }
 
 void CFingerPrintRecognitionDlg::OnBnMenuAdd() {
 	//MessageBox(L"菜单项：录入->添加");
-	IplImage *img = cvLoadImage("D:\\Users\\userl\\Pictures\\fingerprint_db\\URU_0001_01.BMP", 1);
-	if (img == NULL) {
-		MessageBox(L"load image error");
-		return;
+
+	InputDlg inputDlg = InputDlg(IDD_DIALOG_Input, GetDlgItem(IDD_FINGERPRINTRECOGNITION_DIALOG));
+	INT_PTR nResponse = inputDlg.DoModal();
+	if (nResponse == IDOK)
+	{
+		// TODO:  在此放置处理何时用
+		//  “确定”来关闭对话框的代码
+		MessageBox(L"get text:" + inputDlg.m_text);
 	}
-	rightImage.CopyOf(img);
+	else if (nResponse == IDCANCEL)
+	{
+		// TODO:  在此放置处理何时用
+		//  “取消”来关闭对话框的代码
+	}
+	else if (nResponse == -1)
+	{
+		TRACE(traceAppMsg, 0, "警告: 对话框创建失败，应用程序将意外终止。\n");
+		TRACE(traceAppMsg, 0, "警告: 如果您在对话框上使用 MFC 控件，则无法 #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS。\n");
+	}
 
-	drawPicToHDC(IDC_PicRight);
-
-	cvReleaseImage(&img);
+	//change to add mode
+	changeDlgMode(MODE_ADD);
 }
 
 void CFingerPrintRecognitionDlg::OnBnMenuNew() {
-	MessageBox(L"菜单项：录入->新建");
+	//MessageBox(L"菜单项：录入->新建");
+
+	InputDlg inputDlg = InputDlg(IDD_DIALOG_Input, GetDlgItem(IDD_FINGERPRINTRECOGNITION_DIALOG));
+	INT_PTR nResponse = inputDlg.DoModal();
+	if (nResponse == IDOK)
+	{
+		// TODO:  在此放置处理何时用
+		//  “确定”来关闭对话框的代码
+		MessageBox(L"get text:" + inputDlg.m_text);
+	}
+	else if (nResponse == IDCANCEL)
+	{
+		// TODO:  在此放置处理何时用
+		//  “取消”来关闭对话框的代码
+	}
+	else if (nResponse == -1)
+	{
+		TRACE(traceAppMsg, 0, "警告: 对话框创建失败，应用程序将意外终止。\n");
+		TRACE(traceAppMsg, 0, "警告: 如果您在对话框上使用 MFC 控件，则无法 #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS。\n");
+	}
+
+	//change to add mode
+	changeDlgMode(MODE_NEW);
 }
 
 void CFingerPrintRecognitionDlg::OnBnMenuRecognize() {
 	MessageBox(L"菜单项：识别");
+
+	//change to add mode
+	changeDlgMode(MODE_RECG);
+}
+
+void CFingerPrintRecognitionDlg::OnBnClickedRecognize() {
+
 }

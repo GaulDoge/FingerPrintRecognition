@@ -2,6 +2,7 @@
 #include<cv.h>
 #include<highgui.h>
 #include "CvvImage.h"
+#include "InputDlg.h"
 
 
 // FingerPrintRecognitionDlg.h : Í·ÎÄ¼þ
@@ -36,12 +37,17 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	//add mine
-	CvvImage leftImage;
-	CvvImage rightImage;
+	enum DlgMode {MODE_ADD = 11, MODE_NEW = 12, MODE_RECG = 20};
+	CvvImage m_leftImage;
+	CvvImage m_rightImage;
 	CMenu menu;
+	DlgMode m_mode;
 
 	void drawPicToHDC(UINT ID);
-	afx_msg void OnBnClickedButton1();
+	void changeDlgMode(DlgMode);
+	afx_msg void OnBnClickedOpenImg1();
+	afx_msg void OnBnClickedOpenImg2();
+	afx_msg void OnBnClickedRecognize();
 	afx_msg void OnBnMenuAdd();
 	afx_msg void OnBnMenuNew();
 	afx_msg void OnBnMenuRecognize();

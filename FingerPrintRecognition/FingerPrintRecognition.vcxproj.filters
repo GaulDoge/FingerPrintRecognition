@@ -36,6 +36,12 @@
     <ClInclude Include="CvvImage.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="FPTrait.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="InputDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FingerPrintRecognition.cpp">
@@ -48,6 +54,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CvvImage.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="FPTrait.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="InputDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

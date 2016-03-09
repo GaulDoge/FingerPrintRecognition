@@ -106,6 +106,8 @@
     <ClInclude Include="CvvImage.h" />
     <ClInclude Include="FingerPrintRecognition.h" />
     <ClInclude Include="FingerPrintRecognitionDlg.h" />
+    <ClInclude Include="FPTrait.h" />
+    <ClInclude Include="InputDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -114,6 +116,8 @@
     <ClCompile Include="CvvImage.cpp" />
     <ClCompile Include="FingerPrintRecognition.cpp" />
     <ClCompile Include="FingerPrintRecognitionDlg.cpp" />
+    <ClCompile Include="FPTrait.cpp" />
+    <ClCompile Include="InputDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
