@@ -37,7 +37,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	//add mine
-	enum DlgMode {MODE_ADD = 11, MODE_NEW = 12, MODE_RECG = 20};
+	enum DlgMode {MODE_ADD = 11, MODE_NEW = 12, MODE_RECG = 20, MODE_MATCH = 30};
 	CvvImage m_leftImage;
 	CvvImage m_rightImage;
 	CMenu menu;
@@ -47,8 +47,12 @@ public:
 	void changeDlgMode(DlgMode);
 	afx_msg void OnBnClickedOpenImg1();
 	afx_msg void OnBnClickedOpenImg2();
+	afx_msg void OnBnClickedMatch();
 	afx_msg void OnBnClickedRecognize();
+	afx_msg void OnBnClickedExtractTrait();
+	afx_msg void OnBnClickedSave();
 	afx_msg void OnBnMenuAdd();
 	afx_msg void OnBnMenuNew();
 	afx_msg void OnBnMenuRecognize();
+	afx_msg void OnBnMenuMatch();
 };

@@ -61,10 +61,14 @@ BEGIN_MESSAGE_MAP(CFingerPrintRecognitionDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_ImportImg1, &CFingerPrintRecognitionDlg::OnBnClickedOpenImg1)
 	ON_BN_CLICKED(IDC_ImportImg2, &CFingerPrintRecognitionDlg::OnBnClickedOpenImg2)
+	ON_BN_CLICKED(IDC_Match, &CFingerPrintRecognitionDlg::OnBnClickedMatch)
 	ON_BN_CLICKED(IDC_Recognize, &CFingerPrintRecognitionDlg::OnBnClickedRecognize)
+	ON_BN_CLICKED(IDC_ExtractTrait, &CFingerPrintRecognitionDlg::OnBnClickedExtractTrait)
+	ON_BN_CLICKED(IDC_SAVE, &CFingerPrintRecognitionDlg::OnBnClickedSave)
 	ON_BN_CLICKED(ID_MenuAdd, &CFingerPrintRecognitionDlg::OnBnMenuAdd)
 	ON_BN_CLICKED(ID_MenuNew, &CFingerPrintRecognitionDlg::OnBnMenuNew)
 	ON_BN_CLICKED(ID_MenuRecognize, &CFingerPrintRecognitionDlg::OnBnMenuRecognize)
+	ON_BN_CLICKED(ID_MenuMatch, &CFingerPrintRecognitionDlg::OnBnMenuMatch)
 END_MESSAGE_MAP()
 
 
@@ -171,17 +175,31 @@ void CFingerPrintRecognitionDlg::drawPicToHDC(UINT ID) {
 
 void CFingerPrintRecognitionDlg::changeDlgMode(DlgMode m) {
 	m_mode = m;
-	INT_PTR md1 = SW_SHOW, md2 = SW_HIDE;
-	if (m_mode == MODE_RECG) {
+	INT_PTR md1 = SW_SHOW, md2 = SW_HIDE, 
+		md3 = SW_HIDE, md4 = SW_SHOW;
+	if (m_mode == MODE_MATCH) {
 		md1 = SW_HIDE;
 		md2 = SW_SHOW;
 	}
+	if (m_mode == MODE_RECG) {
+		md1 = SW_HIDE;
+		md2 = SW_HIDE;
+		md3 = SW_SHOW;
+		md4 = SW_HIDE;
+	}
 
-	GetDlgItem(IDC_ExtractTrait)->ShowWindow(md1);
-	GetDlgItem(IDC_SAVE)->ShowWindow(md1);
+	GetDlgItem(IDC_ImportImg1)->ShowWindow(TRUE);
 
-	GetDlgItem(IDC_Recognize)->ShowWindow(md2);
-	GetDlgItem(IDC_ImportImg2)->ShowWindow(md2);
+	GetDlgItem(IDC_ExtractTrait)->ShowWindow(md1);	//提取特征按钮
+	GetDlgItem(IDC_SAVE)->ShowWindow(md1);			//保存按钮
+
+	GetDlgItem(IDC_Match)->ShowWindow(md2);			//匹配按钮
+	GetDlgItem(IDC_ImportImg2)->ShowWindow(md2);	//第二个（右边的）导入指纹图像按钮
+
+	GetDlgItem(IDC_Recognize)->ShowWindow(md3);		//识别按钮
+
+	GetDlgItem(IDC_PicLeft)->ShowWindow(TRUE);
+	GetDlgItem(IDC_PicRight)->ShowWindow(md4);
 }
 
 void CFingerPrintRecognitionDlg::OnBnClickedOpenImg1()
@@ -282,6 +300,23 @@ void CFingerPrintRecognitionDlg::OnBnMenuRecognize() {
 	changeDlgMode(MODE_RECG);
 }
 
-void CFingerPrintRecognitionDlg::OnBnClickedRecognize() {
+void CFingerPrintRecognitionDlg::OnBnMenuMatch() {
+	MessageBox(L"on menu match");
+	changeDlgMode(MODE_MATCH);
+}
 
+void CFingerPrintRecognitionDlg::OnBnClickedMatch() {
+	MessageBox(L"clicked match");
+}
+
+void CFingerPrintRecognitionDlg::OnBnClickedRecognize() {
+	MessageBox(L"clicked recognize");
+}
+
+void CFingerPrintRecognitionDlg::OnBnClickedExtractTrait() {
+	MessageBox(L"clicked extract trait");
+}
+
+void CFingerPrintRecognitionDlg::OnBnClickedSave() {
+	MessageBox(L"clicked save");
 }
