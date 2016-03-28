@@ -296,7 +296,7 @@ void CFingerPrintRecognitionDlg::OnBnMenuNew() {
 void CFingerPrintRecognitionDlg::OnBnMenuRecognize() {
 	MessageBox(L"菜单项：识别");
 
-	//change to add mode
+	//change to recognize mode
 	changeDlgMode(MODE_RECG);
 }
 

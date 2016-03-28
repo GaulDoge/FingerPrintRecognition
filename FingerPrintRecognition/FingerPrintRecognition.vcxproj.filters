@@ -13,16 +13,40 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\Interface">
+      <UniqueIdentifier>{988241c7-5441-48d0-baab-d5832950d8b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Interface">
+      <UniqueIdentifier>{2d4828fe-15c0-4ee7-b844-bcf1771bea86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Process">
+      <UniqueIdentifier>{cd718fc2-3225-483f-95ad-7069b869852f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Process">
+      <UniqueIdentifier>{15c408bf-d2a8-4e6e-96e4-cd92ec2c8359}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="core_func.h">
+      <Filter>头文件\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="CvvImage.h">
+      <Filter>头文件\Interface</Filter>
+    </ClInclude>
     <ClInclude Include="FingerPrintRecognition.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\Interface</Filter>
     </ClInclude>
     <ClInclude Include="FingerPrintRecognitionDlg.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="InputDlg.h">
+      <Filter>头文件\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="FPTrait.h">
+      <Filter>头文件\Process</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
@@ -33,33 +57,27 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="CvvImage.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="FPTrait.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="InputDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FingerPrintRecognition.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="FingerPrintRecognitionDlg.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="CvvImage.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="FPTrait.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="core_func.cpp">
+      <Filter>源文件\Process</Filter>
     </ClCompile>
     <ClCompile Include="InputDlg.cpp">
+      <Filter>源文件\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="FingerPrintRecognitionDlg.cpp">
+      <Filter>源文件\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="FingerPrintRecognition.cpp">
+      <Filter>源文件\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="CvvImage.cpp">
+      <Filter>源文件\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="FPTrait.cpp">
+      <Filter>源文件\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

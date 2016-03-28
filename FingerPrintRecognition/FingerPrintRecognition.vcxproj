@@ -103,6 +103,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="core_func.h" />
     <ClInclude Include="CvvImage.h" />
     <ClInclude Include="FingerPrintRecognition.h" />
     <ClInclude Include="FingerPrintRecognitionDlg.h" />
@@ -113,6 +114,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="core_func.cpp" />
     <ClCompile Include="CvvImage.cpp" />
     <ClCompile Include="FingerPrintRecognition.cpp" />
     <ClCompile Include="FingerPrintRecognitionDlg.cpp" />
