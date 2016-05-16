@@ -1,14 +1,13 @@
+// FingerPrintRecognitionDlg.h : 头文件
+//
+
+#pragma once
+
 //add mine
 #include<cv.h>
 #include<highgui.h>
 #include "CvvImage.h"
 #include "InputDlg.h"
-
-
-// FingerPrintRecognitionDlg.h : 头文件
-//
-
-#pragma once
 
 
 // CFingerPrintRecognitionDlg 对话框
@@ -38,12 +37,13 @@ protected:
 public:
 	//add mine
 	enum DlgMode {MODE_ADD = 11, MODE_NEW = 12, MODE_RECG = 20, MODE_MATCH = 30};
-	CvvImage m_leftImage;
-	CvvImage m_rightImage;
+	//CvvImage m_leftImage;
+	//CvvImage m_rightImage;
 	CMenu menu;
 	DlgMode m_mode;
 
-	void drawPicToHDC(UINT ID);
+	void showImgInHDC(UINT ID, const cv::Mat img);
+	//void drawPicToHDC(UINT ID);
 	void changeDlgMode(DlgMode);
 	afx_msg void OnBnClickedOpenImg1();
 	afx_msg void OnBnClickedOpenImg2();

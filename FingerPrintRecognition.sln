@@ -7,6 +7,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FingerPrintRecognition", "F
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj", "{D94ACAC7-5051-4537-BC4E-6AF4E0725236}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test1", "test1\test1.vcxproj", "{146ADA41-1E6A-4120-ABD3-925FCE6AF8CA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test2", "test2\test2.vcxproj", "{9D4865CB-CDF4-45B4-82BA-5E1602C80FDD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -21,6 +25,14 @@ Global
 		{D94ACAC7-5051-4537-BC4E-6AF4E0725236}.Debug|Win32.Build.0 = Debug|Win32
 		{D94ACAC7-5051-4537-BC4E-6AF4E0725236}.Release|Win32.ActiveCfg = Release|Win32
 		{D94ACAC7-5051-4537-BC4E-6AF4E0725236}.Release|Win32.Build.0 = Release|Win32
+		{146ADA41-1E6A-4120-ABD3-925FCE6AF8CA}.Debug|Win32.ActiveCfg = Debug|Win32
+		{146ADA41-1E6A-4120-ABD3-925FCE6AF8CA}.Debug|Win32.Build.0 = Debug|Win32
+		{146ADA41-1E6A-4120-ABD3-925FCE6AF8CA}.Release|Win32.ActiveCfg = Release|Win32
+		{146ADA41-1E6A-4120-ABD3-925FCE6AF8CA}.Release|Win32.Build.0 = Release|Win32
+		{9D4865CB-CDF4-45B4-82BA-5E1602C80FDD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{9D4865CB-CDF4-45B4-82BA-5E1602C80FDD}.Debug|Win32.Build.0 = Debug|Win32
+		{9D4865CB-CDF4-45B4-82BA-5E1602C80FDD}.Release|Win32.ActiveCfg = Release|Win32
+		{9D4865CB-CDF4-45B4-82BA-5E1602C80FDD}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

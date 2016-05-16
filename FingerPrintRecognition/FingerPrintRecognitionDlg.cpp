@@ -7,6 +7,12 @@
 #include "FingerPrintRecognitionDlg.h"
 #include "afxdialogex.h"
 
+// add mine
+#include "core.h"
+#include "MatchResultDlg.h"
+#include <opencv2/opencv.hpp>
+using cv::Mat;
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -162,7 +168,26 @@ HCURSOR CFingerPrintRecognitionDlg::OnQueryDragIcon()
 
 
 //add mine
-void CFingerPrintRecognitionDlg::drawPicToHDC(UINT ID) {
+static Mat leftImage;
+static Mat rightImage;
+static bool leftState = false;
+static bool rightState = false;
+
+void CFingerPrintRecognitionDlg::showImgInHDC(UINT ID, const Mat img) {
+	CvvImage image;
+	image.CopyOf(&IplImage(img));
+
+	CDC *pDC = GetDlgItem(ID)->GetDC();
+	HDC hDC = pDC->GetSafeHdc();
+	CRect rect;
+	GetDlgItem(ID)->GetClientRect(&rect);
+
+	image.DrawToHDC(hDC, &rect);
+
+	ReleaseDC(pDC);
+}
+
+/*void CFingerPrintRecognitionDlg::drawPicToHDC(UINT ID) {
 	CDC *pDC = GetDlgItem(ID)->GetDC();
 	HDC hDC = pDC->GetSafeHdc();
 	CRect rect;
@@ -171,7 +196,7 @@ void CFingerPrintRecognitionDlg::drawPicToHDC(UINT ID) {
 	if (ID == IDC_PicRight) m_rightImage.DrawToHDC(hDC, &rect);
 	ReleaseDC(pDC);
 
-}
+}*/
 
 void CFingerPrintRecognitionDlg::changeDlgMode(DlgMode m) {
 	m_mode = m;
@@ -205,39 +230,67 @@ void CFingerPrintRecognitionDlg::changeDlgMode(DlgMode m) {
 void CFingerPrintRecognitionDlg::OnBnClickedOpenImg1()
 {
 	// TODO:  在此添加控件通知处理程序代码
-	IplImage *img = NULL;
+	//IplImage *img = NULL;
 	CFileDialog fdlg(TRUE, L".BMP");
 	INT_PTR rs = fdlg.DoModal();
 	if (rs == IDOK) {
-		CString path = fdlg.GetPathName();
-		CT2A cvt(path);
-		img = cvLoadImage(cvt.m_psz);
+		//CString path = fdlg.GetPathName();
+		CT2A cvt(fdlg.GetPathName());
+		/*img = cvLoadImage(cvt.m_psz);
 		if (img == NULL) {
 			MessageBox(L"load image eror");
 			return;
 		}
+		Mat temp = cv::cvarrToMat(img);
+		temp = normalize(temp);
+		*img = IplImage(temp);
 		m_leftImage.CopyOf(img);
-		cvReleaseImage(&img);
-		drawPicToHDC(IDC_PicLeft);
+		//cvReleaseImage(&img);
+		drawPicToHDC(IDC_PicLeft);*/
+		Mat img = cv::imread(cvt.m_psz);
+		if (img.empty()) {
+			MessageBox(L"load image eror");
+			return;
+		}
+		else {
+			img = normalize(img);
+			leftImage = img;
+			leftState = true;
+			showImgInHDC(IDC_PicLeft, img);
+		}
 	}
 }
 
 void CFingerPrintRecognitionDlg::OnBnClickedOpenImg2() {
 	// TODO:  在此添加控件通知处理程序代码
-	IplImage *img = NULL;
+	//IplImage *img = NULL;
 	CFileDialog fdlg(TRUE, L".BMP");
 	INT_PTR rs = fdlg.DoModal();
 	if (rs == IDOK) {
 		CString path = fdlg.GetPathName();
 		CT2A cvt(path);
-		img = cvLoadImage(cvt.m_psz);
+		/*img = cvLoadImage(cvt.m_psz);
 		if (img == NULL) {
 			MessageBox(L"load image eror");
 			return;
 		}
+		Mat temp = cv::cvarrToMat(img);
+		temp = normalize(temp);
+		*img = IplImage(temp);
 		m_rightImage.CopyOf(img);
-		cvReleaseImage(&img);
-		drawPicToHDC(IDC_PicRight);
+		//cvReleaseImage(&img);
+		//drawPicToHDC(IDC_PicRight);*/
+		Mat img = cv::imread(cvt.m_psz);
+		if (img.empty()) {
+			MessageBox(L"load image eror");
+			return;
+		}
+		else {
+			img = normalize(img);
+			rightImage = img;
+			rightState = true;
+			showImgInHDC(IDC_PicRight, img);
+		}
 	}
 }
 
@@ -294,19 +347,40 @@ void CFingerPrintRecognitionDlg::OnBnMenuNew() {
 }
 
 void CFingerPrintRecognitionDlg::OnBnMenuRecognize() {
-	MessageBox(L"菜单项：识别");
+	//MessageBox(L"菜单项：识别");
 
 	//change to recognize mode
 	changeDlgMode(MODE_RECG);
 }
 
 void CFingerPrintRecognitionDlg::OnBnMenuMatch() {
-	MessageBox(L"on menu match");
+	//MessageBox(L"on menu match");
 	changeDlgMode(MODE_MATCH);
 }
 
 void CFingerPrintRecognitionDlg::OnBnClickedMatch() {
-	MessageBox(L"clicked match");
+	if (!(leftState&&rightState)) {
+		MessageBox(_T("请先选择指纹图像！"));
+	}
+	else {
+		MessageBox(L"begin");
+		Mat leftOri, rightOri;
+		Mat leftImg, rightImg;
+		leftImg = leftImage.clone();
+		rightImg = rightImage.clone();
+		preprocess(leftImg, leftOri);
+		preprocess(rightImg, rightOri);
+		Mat leftShow = showTraitPoints(leftImg, leftOri);
+		Mat rightShow = showTraitPoints(rightImg, rightOri);
+		showImgInHDC(IDC_PicLeft, leftShow);
+		showImgInHDC(IDC_PicRight, rightShow);
+		MessageBox(L"done!");
+		MatchResultDlg result(
+			match(leftImg, leftOri, rightImg, rightOri),
+			GetDlgItem(IDD_FINGERPRINTRECOGNITION_DIALOG));
+		result.DoModal();
+		leftState = rightState = false;
+	}
 }
 
 void CFingerPrintRecognitionDlg::OnBnClickedRecognize() {

@@ -30,9 +30,6 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="core_func.h">
-      <Filter>头文件\Process</Filter>
-    </ClInclude>
     <ClInclude Include="CvvImage.h">
       <Filter>头文件\Interface</Filter>
     </ClInclude>
@@ -45,9 +42,6 @@
     <ClInclude Include="InputDlg.h">
       <Filter>头文件\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="FPTrait.h">
-      <Filter>头文件\Process</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -57,11 +51,17 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="core.h">
+      <Filter>头文件\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="type.h">
+      <Filter>头文件\Process</Filter>
+    </ClInclude>
+    <ClInclude Include="MatchResultDlg.h">
+      <Filter>头文件\Interface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="core_func.cpp">
-      <Filter>源文件\Process</Filter>
-    </ClCompile>
     <ClCompile Include="InputDlg.cpp">
       <Filter>源文件\Interface</Filter>
     </ClCompile>
@@ -74,11 +74,26 @@
     <ClCompile Include="CvvImage.cpp">
       <Filter>源文件\Interface</Filter>
     </ClCompile>
-    <ClCompile Include="FPTrait.cpp">
-      <Filter>源文件\Process</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="filter.cpp">
+      <Filter>源文件\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="thinning.cpp">
+      <Filter>源文件\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="trait.cpp">
+      <Filter>源文件\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="match.cpp">
+      <Filter>源文件\Process</Filter>
+    </ClCompile>
+    <ClCompile Include="MatchResultDlg.cpp">
+      <Filter>源文件\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="core.cpp">
+      <Filter>源文件\Process</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
