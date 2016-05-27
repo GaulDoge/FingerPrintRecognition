@@ -115,6 +115,40 @@ vector<int> matchStep1(
 	return result;
 }
 
+vector<int> matchStep1(
+	vector<TraitPoint> va, vector<LocalTrait> avec,
+	vector<TraitPoint> vb, vector<LocalTrait> bvec) {
+	const int an = va.size();
+	const int bn = vb.size();
+	const int dd = 16, dr = 4;
+	vector<vector<bool>> stat(an, vector<bool>(bn));
+	for (int i = 0; i < an; ++i) {//≤‚ ‘µ„µƒ∆•≈‰
+		for (int j = 0; j < bn; ++j) {
+			int d = 0;
+			for (int k = 0; k < 3; ++k)
+				d += abs(avec[i].d[k] - bvec[j].d[k]);
+			int r = 0;
+			for (int k = 0; k < 3; ++k)
+				r += abs(avec[i].r[k] - bvec[j].r[k]);
+			if (va[i].t == vb[j].t && // condition 1
+				d < dd&&r < dr && //condition 2
+				(avec[i].t[0] == bvec[j].t[0] && avec[i].t[1] == bvec[j].t[1] ||//condition 3
+				avec[i].t[0] == bvec[j].t[1] && avec[i].t[1] == bvec[j].t[0]))
+				stat[i][j] = true;
+			else stat[i][j] = false;
+		}
+	}
+	int count = 0;
+	for (const auto &e1 : stat)
+		for (const auto &e : e1)
+			if (e) count += 1;
+	vector<int> result(3);
+	result[0] = an;
+	result[1] = bn;
+	result[2] = count;
+	return result;
+}
+
 //‘Ÿ∆•≈‰
 vector<int> matchStep2(Mat aimg, const vector<TraitPoint> va, Mat bimg, const vector<TraitPoint> vb) {
 	return vector<int>(3,0);
@@ -124,4 +158,10 @@ vector<int> match(Mat aimg, Mat aori, Mat bimg, Mat bori) {
 	vector<TraitPoint> avec = getTraitPoints(aimg, aori);
 	vector<TraitPoint> bvec = getTraitPoints(bimg, aori);
 	return matchStep1(aimg, avec, bimg, bvec);
+}
+
+vector<int> match(
+	vector<TraitPoint> va, vector<LocalTrait> avec,
+	vector<TraitPoint> vb, vector<LocalTrait> bvec) {
+	return matchStep1(va, avec, vb, bvec);
 }

@@ -36,7 +36,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	//add mine
-	enum DlgMode {MODE_ADD = 11, MODE_NEW = 12, MODE_RECG = 20, MODE_MATCH = 30};
+	enum DlgMode {MODE_ADD = 11, MODE_RECG = 20, MODE_MATCH = 30};
 	//CvvImage m_leftImage;
 	//CvvImage m_rightImage;
 	CMenu menu;

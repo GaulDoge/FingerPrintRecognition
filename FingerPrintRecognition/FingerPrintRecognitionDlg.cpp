@@ -11,6 +11,7 @@
 #include "core.h"
 #include "MatchResultDlg.h"
 #include <opencv2/opencv.hpp>
+#include <fstream>
 using cv::Mat;
 
 #ifdef _DEBUG
@@ -72,7 +73,6 @@ BEGIN_MESSAGE_MAP(CFingerPrintRecognitionDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_ExtractTrait, &CFingerPrintRecognitionDlg::OnBnClickedExtractTrait)
 	ON_BN_CLICKED(IDC_SAVE, &CFingerPrintRecognitionDlg::OnBnClickedSave)
 	ON_BN_CLICKED(ID_MenuAdd, &CFingerPrintRecognitionDlg::OnBnMenuAdd)
-	ON_BN_CLICKED(ID_MenuNew, &CFingerPrintRecognitionDlg::OnBnMenuNew)
 	ON_BN_CLICKED(ID_MenuRecognize, &CFingerPrintRecognitionDlg::OnBnMenuRecognize)
 	ON_BN_CLICKED(ID_MenuMatch, &CFingerPrintRecognitionDlg::OnBnMenuMatch)
 END_MESSAGE_MAP()
@@ -168,10 +168,11 @@ HCURSOR CFingerPrintRecognitionDlg::OnQueryDragIcon()
 
 
 //add mine
-static Mat leftImage;
-static Mat rightImage;
+static Mat leftImage(480, 480, CV_8UC1);
+static Mat rightImage(480, 480, CV_8UC1);
 static bool leftState = false;
 static bool rightState = false;
+extern int extraitState;
 
 void CFingerPrintRecognitionDlg::showImgInHDC(UINT ID, const Mat img) {
 	CvvImage image;
@@ -199,32 +200,46 @@ void CFingerPrintRecognitionDlg::showImgInHDC(UINT ID, const Mat img) {
 }*/
 
 void CFingerPrintRecognitionDlg::changeDlgMode(DlgMode m) {
-	m_mode = m;
-	INT_PTR md1 = SW_SHOW, md2 = SW_HIDE, 
-		md3 = SW_HIDE, md4 = SW_SHOW;
-	if (m_mode == MODE_MATCH) {
-		md1 = SW_HIDE;
-		md2 = SW_SHOW;
+	this->m_mode = m;
+	leftImage = 100;
+	rightImage = 100;
+	leftState = false;
+	rightState = false;
+	extraitState = 0;//将提取阶段值为0
+	showImgInHDC(IDC_PicLeft, leftImage);
+	showImgInHDC(IDC_PicRight, rightImage);
+
+	if (m == MODE_ADD) {
+		GetDlgItem(IDC_ImportImg1)->ShowWindow(TRUE);
+		GetDlgItem(IDC_Recognize)->ShowWindow(FALSE);
+		GetDlgItem(IDC_ExtractTrait)->ShowWindow(TRUE);
+		GetDlgItem(IDC_Match)->ShowWindow(FALSE);
+		GetDlgItem(IDC_SAVE)->ShowWindow(TRUE);
+		GetDlgItem(IDC_ImportImg2)->ShowWindow(FALSE);
 	}
-	if (m_mode == MODE_RECG) {
-		md1 = SW_HIDE;
-		md2 = SW_HIDE;
-		md3 = SW_SHOW;
-		md4 = SW_HIDE;
+	else if (m == MODE_MATCH) {
+		GetDlgItem(IDC_ImportImg1)->ShowWindow(TRUE);
+		GetDlgItem(IDC_Recognize)->ShowWindow(FALSE);
+		GetDlgItem(IDC_ExtractTrait)->ShowWindow(FALSE);
+		GetDlgItem(IDC_Match)->ShowWindow(TRUE);
+		GetDlgItem(IDC_SAVE)->ShowWindow(FALSE);
+		GetDlgItem(IDC_ImportImg2)->ShowWindow(TRUE);
 	}
-
-	GetDlgItem(IDC_ImportImg1)->ShowWindow(TRUE);
-
-	GetDlgItem(IDC_ExtractTrait)->ShowWindow(md1);	//提取特征按钮
-	GetDlgItem(IDC_SAVE)->ShowWindow(md1);			//保存按钮
-
-	GetDlgItem(IDC_Match)->ShowWindow(md2);			//匹配按钮
-	GetDlgItem(IDC_ImportImg2)->ShowWindow(md2);	//第二个（右边的）导入指纹图像按钮
-
-	GetDlgItem(IDC_Recognize)->ShowWindow(md3);		//识别按钮
-
+	else if (m == MODE_RECG) {
+		GetDlgItem(IDC_ImportImg1)->ShowWindow(TRUE);
+		GetDlgItem(IDC_Recognize)->ShowWindow(TRUE);
+		GetDlgItem(IDC_ExtractTrait)->ShowWindow(FALSE);
+		GetDlgItem(IDC_Match)->ShowWindow(FALSE);
+		GetDlgItem(IDC_SAVE)->ShowWindow(FALSE);
+		GetDlgItem(IDC_ImportImg2)->ShowWindow(FALSE);
+	}
+	else {
+		MessageBox(_T("Unknown Error!"));
+		exit(EXIT_FAILURE);
+	}
+	
 	GetDlgItem(IDC_PicLeft)->ShowWindow(TRUE);
-	GetDlgItem(IDC_PicRight)->ShowWindow(md4);
+	GetDlgItem(IDC_PicRight)->ShowWindow(TRUE);
 }
 
 void CFingerPrintRecognitionDlg::OnBnClickedOpenImg1()
@@ -297,7 +312,7 @@ void CFingerPrintRecognitionDlg::OnBnClickedOpenImg2() {
 void CFingerPrintRecognitionDlg::OnBnMenuAdd() {
 	//MessageBox(L"菜单项：录入->添加");
 
-	InputDlg inputDlg = InputDlg(IDD_DIALOG_Input, GetDlgItem(IDD_FINGERPRINTRECOGNITION_DIALOG));
+	/*InputDlg inputDlg = InputDlg(IDD_DIALOG_Input, GetDlgItem(IDD_FINGERPRINTRECOGNITION_DIALOG));
 	INT_PTR nResponse = inputDlg.DoModal();
 	if (nResponse == IDOK)
 	{
@@ -314,36 +329,10 @@ void CFingerPrintRecognitionDlg::OnBnMenuAdd() {
 	{
 		TRACE(traceAppMsg, 0, "警告: 对话框创建失败，应用程序将意外终止。\n");
 		TRACE(traceAppMsg, 0, "警告: 如果您在对话框上使用 MFC 控件，则无法 #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS。\n");
-	}
+	}*/
 
 	//change to add mode
 	changeDlgMode(MODE_ADD);
-}
-
-void CFingerPrintRecognitionDlg::OnBnMenuNew() {
-	//MessageBox(L"菜单项：录入->新建");
-
-	InputDlg inputDlg = InputDlg(IDD_DIALOG_Input, GetDlgItem(IDD_FINGERPRINTRECOGNITION_DIALOG));
-	INT_PTR nResponse = inputDlg.DoModal();
-	if (nResponse == IDOK)
-	{
-		// TODO:  在此放置处理何时用
-		//  “确定”来关闭对话框的代码
-		MessageBox(L"get text:" + inputDlg.m_text);
-	}
-	else if (nResponse == IDCANCEL)
-	{
-		// TODO:  在此放置处理何时用
-		//  “取消”来关闭对话框的代码
-	}
-	else if (nResponse == -1)
-	{
-		TRACE(traceAppMsg, 0, "警告: 对话框创建失败，应用程序将意外终止。\n");
-		TRACE(traceAppMsg, 0, "警告: 如果您在对话框上使用 MFC 控件，则无法 #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS。\n");
-	}
-
-	//change to add mode
-	changeDlgMode(MODE_NEW);
 }
 
 void CFingerPrintRecognitionDlg::OnBnMenuRecognize() {
@@ -383,14 +372,115 @@ void CFingerPrintRecognitionDlg::OnBnClickedMatch() {
 	}
 }
 
-void CFingerPrintRecognitionDlg::OnBnClickedRecognize() {
-	MessageBox(L"clicked recognize");
-}
+vector<TraitPoint> tpVec;
+vector<LocalTrait> ltVec;
+bool isSaveable = false;
+int extraitState = 0;
 
 void CFingerPrintRecognitionDlg::OnBnClickedExtractTrait() {
-	MessageBox(L"clicked extract trait");
+	//MessageBox(L"clicked extract trait");
+	if (!leftState) {
+		MessageBox(_T("请选择指纹图像！"));
+	}
+	else {
+		static Mat extraitImage;
+		static Mat extraitImgOri;
+		switch (extraitState) {
+		case 0://滤波
+			isSaveable = false;
+			extraitImage = leftImage.clone();
+			extraitImgOri = directionalOrientation(extraitImage);
+			toBlockOrientation(extraitImgOri);
+			extraitImage = directionalFilter(extraitImage, extraitImgOri);
+			showImgInHDC(IDC_PicRight, extraitImage);
+			//showImgInHDC(IDC_PicRight, extraitImgOri*30);
+			extraitState += 1;
+			break;
+		case 1://二值化
+			thresholdImage(extraitImage);
+			showImgInHDC(IDC_PicRight, extraitImage);
+			extraitState += 1;
+			break;
+		case 2://细化
+			thinningImage(extraitImage);
+			optimizeThinnedImage(extraitImage);
+			showImgInHDC(IDC_PicRight, extraitImage);
+			extraitState += 1;
+			break;
+		case 3://删除噪声
+			deletePointAndShortLine(extraitImage);
+			showImgInHDC(IDC_PicRight, extraitImage);
+			extraitState += 1;
+			break;
+		case 4://显示特征点 ;
+			showImgInHDC(IDC_PicRight, showTraitPoints(extraitImage));
+			extraitState += 1;
+			break;
+		case 5://消除伪特征点
+			tpVec = getTraitPoints(extraitImage, extraitImgOri);
+			ltVec = getLocalTrait(extraitImage, tpVec);
+			extraitImage = showTraitPoints(extraitImage, extraitImgOri);
+			showImgInHDC(IDC_PicRight, extraitImage);
+			extraitState += 1;
+			break;
+		default:
+			extraitState = 0;
+			leftState = false;
+			isSaveable = true;
+			MessageBox(_T("特征提取完成！"));
+		}
+	}
 }
 
 void CFingerPrintRecognitionDlg::OnBnClickedSave() {
-	MessageBox(L"clicked save");
+	//MessageBox(L"clicked save");
+	//CString str;
+	//str.Format(_T("%d, %d"), tpVec.size(), ltVec.size());
+	//MessageBox(str);
+	if (isSaveable) {
+		std::ofstream out;
+		out.open("fingerprint.db", std::ofstream::out | std::ofstream::app | std::ofstream::binary);
+		bool rst = writeTraits(out, tpVec, ltVec);
+		out.close();
+		if (rst) MessageBox(_T("保存成功！"));
+		else MessageBox(_T("保存失败！"));
+	}
+}
+
+void CFingerPrintRecognitionDlg::OnBnClickedRecognize() {
+	//MessageBox(L"clicked recognize");
+	if (!leftState) {
+		MessageBox(_T("请选择指纹图像！"));
+	}
+	else {
+		Mat ori;
+		Mat nor = leftImage;
+		preprocess(nor, ori);
+		Mat showImg = showTraitPoints(nor, ori);
+		showImgInHDC(IDC_PicRight, showImg);
+		vector<TraitPoint> va = getTraitPoints(nor, ori);
+		vector<LocalTrait> avec = getLocalTrait(nor, va);
+		//CString str;
+		//str.Format(_T("%d, %d"), va.size(), avec.size());
+		//MessageBox(str);
+
+		std::ifstream in;
+		in.open("fingerprint.db", std::ifstream::in | std::ifstream::binary);
+
+		vector<int> rstVec(3, 0);
+		while (in) {
+			vector<int> tmp = recognize(in, va, avec);
+			if (tmp.size() >= 3) {
+				if (rstVec[2] < tmp[2])
+					rstVec = tmp;
+			}
+		}
+
+		MatchResultDlg result(
+			rstVec,
+			GetDlgItem(IDD_FINGERPRINTRECOGNITION_DIALOG));
+		result.DoModal();
+		in.close();
+		leftState = false;
+	}
 }

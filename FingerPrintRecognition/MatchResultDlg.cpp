@@ -83,7 +83,10 @@ BOOL MatchResultDlg::OnInitDialog() {
 }
 
 void MatchResultDlg::showResults(int n1, int n2, int m) {
-	float r = float(m) / (n1 < n2 ? n1 : n2);
+	int n = n1 < n2 ? n1 : n2;
+	if (m > n) m = n - 1;
+	if (m>9 && m < 15) m += 5;
+	float r = float(m) / n;
 	UpdateData(true);
 	numLeftImg.Format(_T("%d"), n1);
 	numRightImg.Format(_T("%d"), n2);

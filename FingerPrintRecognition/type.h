@@ -2,13 +2,24 @@
 //特征点类，用于表示指纹图像的特征点
 class TraitPoint{
 public:
-	enum TP_T{ END, BUFI };
+	enum TP_T{ END =0, BUFI=1 };
 	TraitPoint() = default;
 	TraitPoint(int x, int y, TP_T t, int d) {
 		this->x = x;
 		this->y = y;
 		this->t = t;
 		this->d = d;
+	}
+	TraitPoint(int x, int y, int t, int d) {
+		this->x = x;
+		this->y = y;
+		this->d = d;
+		if (t == 0) {
+			this->t = END;
+		}
+		else {
+			this->t = BUFI;
+		}
 	}
 
 	int x;

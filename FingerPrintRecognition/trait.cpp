@@ -51,7 +51,7 @@ static void deleteEdgeTriat(Mat &timg, const Mat &img, const int len = 64) {
 	for (int i = 0, h = timg.rows; i < h; ++i) {
 		for (int j = 0, w = timg.cols; j < w; ++j) {
 			uchar &e = timg.at<uchar>(i, j);
-			if (e == 1) {
+			if (e == 1 || e == 3) {
 				int a[4] = { 0 };
 				for (int x = i - 1; x >= 0 && x > i - len; --x)// up
 					if (img.at<uchar>(x, j) == 0) 
@@ -197,9 +197,9 @@ Mat showTraitPoints(const Mat &img, const Mat &ori) {
 		}
 	}
 
-	//vector<TraitPoint> rst = getTraitPoints(img, ori);
-	vector<TraitPoint> extractTraitPoints(const Mat&, const Mat&);
-	vector<TraitPoint> rst = extractTraitPoints(img, ori);
+	vector<TraitPoint> rst = getTraitPoints(img, ori);
+	//vector<TraitPoint> extractTraitPoints(const Mat&, const Mat&);
+	//vector<TraitPoint> rst = extractTraitPoints(img, ori);
 	Point ps[] = {
 		Point(-2, -2), Point(-2, -1), Point(-2, 0), Point(-2, 1), Point(-2, 2),
 		Point(-1, 2), Point(0, 2), Point(1, 2), Point(2, 2),
@@ -216,6 +216,48 @@ Mat showTraitPoints(const Mat &img, const Mat &ori) {
 			sImg.at<uchar>(x, y) = b;
 			sImg.at<uchar>(x, y + 1) = g;
 			sImg.at<uchar>(x, y + 2) = r;
+		}
+	}
+	return sImg;
+}
+
+Mat showTraitPoints(const Mat &img) {
+	Mat traitImg = getTraitImage(img);
+
+	Mat sImg(traitImg.size(), CV_8UC3, cv::Scalar::all(255));
+	for (int i = 0, ni = img.rows; i < ni; ++i){
+		for (int j = 0, nj = img.cols; j < nj; ++j) {
+			if (img.at<uchar>(i, j) == 0) {
+				sImg.at<uchar>(i, j * 3) = 0;
+				sImg.at<uchar>(i, j * 3 + 1) = 0;
+				sImg.at<uchar>(i, j * 3 + 2) = 0;
+			}
+		}
+	}
+
+	const int nRow = traitImg.rows;
+	const int nCol = traitImg.cols;
+	Point ps[] = {
+		Point(-2, -2), Point(-2, -1), Point(-2, 0), Point(-2, 1), Point(-2, 2),
+		Point(-1, 2), Point(0, 2), Point(1, 2), Point(2, 2),
+		Point(2, 1), Point(2, 0), Point(2, -1), Point(2, -2),
+		Point(1, -2), Point(0, -2), Point(-1, -2), Point(-2, -2) };
+	for (int i = 0; i < nRow; i += 1) {
+		for (int j = 0; j < nCol; j += 1) {
+			const uchar v = traitImg.at<uchar>(i, j);
+			if (v == 1 || v == 3) {
+				int r = 0, g = 0, b = 0;
+				if (v == 1) b = 255;
+				else if (v == 3) r = 255;
+
+				for (const auto &p : ps) {
+					int x = i + p.x;
+					int y = (j + p.y) * 3;
+					sImg.at<uchar>(x, y) = b;
+					sImg.at<uchar>(x, y + 1) = g;
+					sImg.at<uchar>(x, y + 2) = r;
+				}
+			}
 		}
 	}
 	return sImg;
