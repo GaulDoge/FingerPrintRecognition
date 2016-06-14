@@ -49,7 +49,8 @@ Mat directionalOrientation(const Mat &nor) {
 
 		int Var = 0;
 		for (int i = 0; i < _n; ++i)
-			Var += (M - tb[i]) * (M - tb[i]);
+			//Var += (M - tb[i]) * (M - tb[i]);
+			Var += abs(M - tb[i]);
 
 		return Var / _n;
 	};
